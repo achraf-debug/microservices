@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class OrderService {
 	
-	private final WebClient webClient;
+	private final WebClient.Builder webClientBuilder;
 	@Autowired
 	private final OrderRepository orderRepository;
 	
@@ -34,8 +34,8 @@ public class OrderService {
 		
 		List<String> skuCodes = order.getOrderLineItemList().stream().map(OrderLineItem::getSkuCode).toList();
 		
-		InventoryResponse[] inventoryResponses = webClient.get()
-																	.uri("http://localhost:8082/api/inventory", uriBuilder ->
+		InventoryResponse[] inventoryResponses = webClientBuilder.build().get()
+																	.uri("http://inventory-service/api/inventory", uriBuilder ->
 																		uriBuilder.queryParam("skuCode", skuCodes).build())
 																	.retrieve()
 																	.bodyToMono(InventoryResponse[].class)
@@ -56,7 +56,6 @@ public class OrderService {
 	private OrderLineItem mapFromDto(OrderLineItemDto orderLineItemDto) {
 		
 		return OrderLineItem.builder()
-			.id(orderLineItemDto.getId())
 			.skuCode(orderLineItemDto.getSkuCode())
 			.price(orderLineItemDto.getPrice())
 			.quantity(orderLineItemDto.getQuantity()).build();
