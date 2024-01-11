@@ -36,11 +36,3 @@ build/
 
 ### Mac OS ###
 .DS_Store
-
-### data folders ###
-postgres-inventory
-postgres-order
-realms
-mongo-data
-mysql_keycloak_data
-grafana
